@@ -135,6 +135,7 @@ def summaryOutput ( output_feature_top, output_feature_low, outputs ) :
 
 def defuzzy( output_feature_top, output_feature_low, outputs ) :
     x_axis, y_axis, result = summaryOutput( output_feature_top, output_feature_low, outputs )
+    resultY = []
     # print('Defuzz')
     for i in range(0, len(outputs)) :
         yr = Calyr_cen( x_axis, y_axis[i][1], y_axis[i][0])
@@ -145,7 +146,7 @@ def defuzzy( output_feature_top, output_feature_low, outputs ) :
         for j in range(1, len(x_axis)-1 ) :
             if x_axis[j-1] >= yrI and yrI <= x_axis[j+1] :
                 yrII = Calyr_yII(x_axis, y_axis[i][1], y_axis[i][0], j)
-                if yrII == yrI or abs(yrII - yrI) < 0.001  :
+                if yrII == yrI or abs(yrII - yrI) < 0.0001  :
                     yr = yrII
                     break
                 else :
@@ -154,16 +155,18 @@ def defuzzy( output_feature_top, output_feature_low, outputs ) :
         for j in range(1, len(x_axis)-1 ) :
             if x_axis[j-1] >= ylI and ylI <= x_axis[j+1] :
                 ylII = Calyl_yII(x_axis, y_axis[i][1], y_axis[i][0], j)
-                if ylII == ylI or abs(ylII - ylI) < 0.001 :
+                if ylII == ylI or abs(ylII - ylI) < 0.0001 :
                     yl = ylII
                     break
                 else :
                     ylI = ylII
         result[i] = (yr+yl)/2
 
+    resultY = [ r/0.08 for r in result ]
+
     # print(result)
-    plotResult( x_axis, y_axis, result )
-    return result
+    # plotResult( x_axis, y_axis, result )
+    return result, resultY
 
 def plotResult( x_axis, y_axis, result) :
     for i in range(0, len(result)) :
@@ -210,3 +213,4 @@ def Calyl_yII ( x_axis, y_axis_low, y_axis_top, L ) :
         frMultiy.append( fr[i] * x_axis[i] )
     result = sum(frMultiy) / sum(fr)
     return result
+
