@@ -64,16 +64,16 @@ def outputset(result_top, result_low, result_rule, n_class) :
     for i in range(0, n_class) :
         out.append( [ [0, 1], [0, 1]])
     for i in range(0,len(result_top)) :
-        # print('----')
-        # print(result_top[i])
-        # print(result_low[i])
-        # print(result_rule[i])
-        # print('yes')
-        # print(result_rule[i])
-        # print('no')
+        print('oooo')
+        print(result_top[i])
+        print(result_low[i])
+        print(result_rule[i])
+        print('yes')
+        print(result_rule[i])
+        print('no')
         for j in range(0, n_class):
             if j != result_rule[i] :
-                # print(j)
+                print(j)
                 if result_top[i] > out[j][1][0] :
                     out[j][1][0] = result_top[i]
                 if result_low[i] < out[j][1][1] :
@@ -87,16 +87,18 @@ def outputset(result_top, result_low, result_rule, n_class) :
     for i in range(0, n_class) :
         if out[i][0] == [0, 1] :
             out[i][0] = [0, 0]
-    # print(' ')
-    # for x in out :
-    #     print(x)
+    print('------------')
+    for x in out :
+        print(x)
     return out
 
-def defuzzy( output_feature_top, output_feature_low, outputs ) :
-    x_axis = np.linspace(0,4,1001)
+def summaryOutput ( output_feature_top, output_feature_low, outputs ) :
+    x_axis = np.linspace(0,4,501)
     y_axis = []
+    result = []
     for i in range(0, len(outputs)) :
         y_axis.append( [ [], [] ] )
+        result.append( [] )
     i = 0
     for output in outputs :
         yes = output[0]
@@ -128,22 +130,83 @@ def defuzzy( output_feature_top, output_feature_low, outputs ) :
 
             y_axis[i][0].append(np.max([ y_temp_top_yes , y_temp_top_no]))
             y_axis[i][1].append(np.max([ y_temp_low_yes , y_temp_low_no]))
-        i = i + 1  
-    # print(y_axis[0])  
-    x = x_axis
-    y1 = y_axis[0][0]
-    y2 = y_axis[0][1]
-    trace1 = Scatter(
-                x = x,
-                y = y1,
-            )
-    trace2 = Scatter(
-                x = x,
-                y = y2,
-            )
-    data2 = [ trace1, trace2 ]
+        i = i + 1 
+    return x_axis, y_axis, result
 
-    fig = go.Figure(data = data2)
+def defuzzy( output_feature_top, output_feature_low, outputs ) :
+    x_axis, y_axis, result = summaryOutput( output_feature_top, output_feature_low, outputs )
+    # print('Defuzz')
+    for i in range(0, len(outputs)) :
+        yr = Calyr_cen( x_axis, y_axis[i][1], y_axis[i][0])
+        yl = yr
+        yrI = yr
+        ylI = yl
+        ###yR
+        for j in range(1, len(x_axis)-1 ) :
+            if x_axis[j-1] >= yrI and yrI <= x_axis[j+1] :
+                yrII = Calyr_yII(x_axis, y_axis[i][1], y_axis[i][0], j)
+                if yrII == yrI or abs(yrII - yrI) < 0.001  :
+                    yr = yrII
+                    break
+                else :
+                    yrI = yrII
+        ###yL
+        for j in range(1, len(x_axis)-1 ) :
+            if x_axis[j-1] >= ylI and ylI <= x_axis[j+1] :
+                ylII = Calyl_yII(x_axis, y_axis[i][1], y_axis[i][0], j)
+                if ylII == ylI or abs(ylII - ylI) < 0.001 :
+                    yl = ylII
+                    break
+                else :
+                    ylI = ylII
+        result[i] = (yr+yl)/2
 
-    plotly.offline.plot(fig, filename='output.html')
-    return 1
+    print(result)
+    plotResult( x_axis, y_axis, result )
+    return result
+
+def plotResult( x_axis, y_axis, result) :
+    for i in range(0, len(result)) :
+        x = x_axis
+        y1 = y_axis[i][0]
+        y2 = y_axis[i][1]
+        trace1 = Scatter( x = x, y = y1 )
+        trace2 = Scatter( x = x, y = y2 )
+        trace3 = Scatter( x = [result[i], result[i]], y = [0, 1] )
+        data = [ trace1, trace2, trace3 ]
+        fig = go.Figure(data = data)
+
+        plotly.offline.plot(fig, filename='output' + str(i) + '.html')
+
+def Calyr_cen ( x_axis, y_axis_low, y_axis_top) :
+    fr = []
+    frMultiy = []
+    for i in range(0, len(x_axis) ) :
+        fr.append( (y_axis_low[i] + y_axis_top[i] ) / 2 )
+        frMultiy.append( fr[i] * x_axis[i] )
+    result = sum(frMultiy) / sum(fr)
+    return result
+
+def Calyr_yII ( x_axis, y_axis_low, y_axis_top, R ) :
+    fr = []
+    frMultiy = []
+    for i in range(0, len(x_axis) ) :
+        if i > R :
+            fr.append( y_axis_top[i] )
+        else :
+            fr.append( y_axis_low[i] )
+        frMultiy.append( fr[i] * x_axis[i] )
+    result = sum(frMultiy) / sum(fr)
+    return result
+
+def Calyl_yII ( x_axis, y_axis_low, y_axis_top, L ) :
+    fr = []
+    frMultiy = []
+    for i in range(0, len(x_axis) ) :
+        if i <= L :
+            fr.append( y_axis_top[i] )
+        else :
+            fr.append( y_axis_low[i] )
+        frMultiy.append( fr[i] * x_axis[i] )
+    result = sum(frMultiy) / sum(fr)
+    return result
