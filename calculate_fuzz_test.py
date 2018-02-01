@@ -64,16 +64,16 @@ def outputset(result_top, result_low, result_rule, n_class) :
     for i in range(0, n_class) :
         out.append( [ [0, 1], [0, 1]])
     for i in range(0,len(result_top)) :
-        print('oooo')
-        print(result_top[i])
-        print(result_low[i])
-        print(result_rule[i])
-        print('yes')
-        print(result_rule[i])
-        print('no')
+        # print('oooo')
+        # print(result_top[i])
+        # print(result_low[i])
+        # print(result_rule[i])
+        # print('yes')
+        # print(result_rule[i])
+        # print('no')
         for j in range(0, n_class):
             if j != result_rule[i] :
-                print(j)
+                # print(j)
                 if result_top[i] > out[j][1][0] :
                     out[j][1][0] = result_top[i]
                 if result_low[i] < out[j][1][1] :
@@ -87,9 +87,9 @@ def outputset(result_top, result_low, result_rule, n_class) :
     for i in range(0, n_class) :
         if out[i][0] == [0, 1] :
             out[i][0] = [0, 0]
-    print('------------')
-    for x in out :
-        print(x)
+    # print('------------')
+    # for x in out :
+    #     print(x)
     return out
 
 def summaryOutput ( output_feature_top, output_feature_low, outputs ) :
@@ -103,9 +103,9 @@ def summaryOutput ( output_feature_top, output_feature_low, outputs ) :
     for output in outputs :
         yes = output[0]
         no = output[1]
-        print('-----')
-        print(yes)
-        print(no)
+        # print('-----')
+        # print(yes)
+        # print(no)
         for x in x_axis :
             y_temp_top_yes = 0
             y_temp_top_no = 0
@@ -161,7 +161,7 @@ def defuzzy( output_feature_top, output_feature_low, outputs ) :
                     ylI = ylII
         result[i] = (yr+yl)/2
 
-    print(result)
+    # print(result)
     plotResult( x_axis, y_axis, result )
     return result
 
