@@ -5,7 +5,7 @@ from calculate_fuzz_test import fuzzification, interface, outputset, defuzzy
 import csv 
 
 data = []
-with open('data/dataCrawl.csv', 'r') as f:
+with open('data/dataCar.csv', 'r') as f:
     for row in csv.reader(f.read().splitlines() ):
         data.append( [] )
         for r in row :
@@ -33,27 +33,27 @@ for d in data :
     result, resultY = defuzzy(output_feature_top, output_feature_low, outputs)
     
     # results.append(result)
-    xxx = []
+    input = []
     answer = []
     for rr in result :
         if rr > 2 :
             answer.append(1)
         else :
             answer.append(0)
-        xxx.append(rr)
+        input.append(rr)
     index = 0
     max = 0.0
     for a in range(0, len(answer) ) :
-        if answer[a] != 0.0 and resultY[a] > max :
+        if answer[a] != 0.0 and result[a] > max :
             index = a
-            max = resultY[a]
+            max = result[a]
     answerSummary = np.zeros( len(answer) )
     answerSummary[index] = 1
     results.append(answerSummary) 
-    if index != 2 :
-        print('---------->' + str(xxx) + '->' + str(index+1) )
+    if index != 0 :
+        print('---------->' + str(input) + '->' + str(index+1) )
     else :
-        print(str(xxx) + '->' + str(index+1))
+        print(str(input) + '->' + str(index+1))
     count[index] = count[index] + 1
     # print(str(input_feature) + '->' + str( np.where(answerSummary == 1) ) )
 
