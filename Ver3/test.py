@@ -23,7 +23,7 @@ output_feature_top, output_feature_low = getOutput()
 rule_feature, numOfRule = getRule()
 n_class = 5
 
-input_feature=[0.711538462,	0.903846154,	0,	0.1]
+input_feature=[0.711538462, 0.903846154, 0, 0.1]
 # input_feature = [0.884615385,	0.807692308,	0.02,	0.1]
 # # input_feature = [1.733333333,	0.966666667,	0.14,	0.1]
 

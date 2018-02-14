@@ -41,11 +41,11 @@ def getMF ():
 def getOutput (): 
     output_feature_top = [
         [0, 1, 2, 1],
-        [2, 3, 4, 1]
+        [1, 2, 3, 1]
     ]
     output_feature_low = [
         [0.5000, 1.0000, 1.5000, 1.0000],
-        [2.5000, 3.0000, 3.5000, 1.0000]
+        [1.5000, 2.0000, 2.5000, 1.0000]
     ]
     return output_feature_top, output_feature_low
 

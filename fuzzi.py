@@ -10,7 +10,7 @@ output_feature_top, output_feature_low = getOutput()
 rule_feature, numOfRule = getRule()
 n_class = 5
 
-input_feature=[1.314285714,	0.942857143,	0,	0.1]
+input_feature=[1.77777777777778,	0.703703703703704,	0,	0]
 out_low, out_top = fuzzification(input_feature, input_feature_top, input_feature_low, numOfFeature, n_rule)
 
 result_top, result_low, result_rule = interface(out_low, out_top, rule_feature)
