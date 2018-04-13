@@ -151,10 +151,10 @@ def centroid (top, low, yORn, output_feature_top, output_feature_low) :
 def outputEachRule (result_top, result_low, result_rule, output_feature_top, output_feature_low, n_class) :
     # print('OUTPUT EACH RULES')
     outputs = []
-    for i in range(0, n_class) :
+    for i in range(0, 1) :
         outputs.append( [] )
     for i in range(0,len(result_top)) :
-        for j in range(0, n_class ) :
+        for j in range(0, 1 ) :
             if j == result_rule[i] :
                 yl, yr = centroid(result_top[i], result_low[i], 1, output_feature_top, output_feature_low)
                 outputs[result_rule[i]].append( [ result_top[i], result_low[i], yl, yr , 1 ] )
