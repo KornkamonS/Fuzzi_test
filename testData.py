@@ -1,24 +1,27 @@
 import numpy as np
 from membership_test import getMF, getOutput, firstMem, lastMem, triangle
 from rule_test import getRule
-from calculate_fuzz_test import fuzzification, interface, outputset, defuzzy
+from fuzzyInterval import fuzzification, inference, outputset, outputEachRule, defuzzy, defuzzyPrint
+from visualFuzz import printFuzzification, printMINIMUM_TN, printOutput
 import csv 
-
+fileTarget = 'dataRun'
 data = []
-with open('data/dataCar.csv', 'r') as f:
+with open('../data/' + fileTarget +'.csv', 'r') as f:
     for row in csv.reader(f.read().splitlines() ):
         data.append( [] )
         for r in row :
             data[ len(data)-1 ].append( float(r) )
 
+results = []
+class_results = []
+count = [0, 0, 0, 0, 0]
+
+### INIT
 input_feature_top, input_feature_low, numOfFeature, n_rule = getMF()
 output_feature_top, output_feature_low = getOutput()
 rule_feature, numOfRule = getRule()
 n_class = 5
-
-results = []
-
-count = [0, 0, 0, 0, 0]
+###
 
 cccc = 1
 for d in data :
@@ -26,25 +29,14 @@ for d in data :
     input_feature = d
 
     out_low, out_top = fuzzification(input_feature, input_feature_top, input_feature_low, numOfFeature, n_rule)
+    result_top, result_low, result_rule = inference(out_low, out_top, rule_feature)
+    outputs = outputEachRule (result_top, result_low, result_rule, output_feature_top, output_feature_low, n_class)
+    result = defuzzy(outputs)
 
-    result_top, result_low, result_rule = interface(out_low, out_top, rule_feature)
-
-    # print(out_top)
-    # print(out_low)
-    # print('----------')
-    # print(result_top)
-    # print(result_low)
-    # print(result_rule)
-
-    outputs = outputset(result_top, result_low, result_rule, n_class)
-
-    result, resultY = defuzzy(output_feature_top, output_feature_low, outputs, result_top, result_low)
-    
-    # results.append(result)
     input = []
     answer = []
     for rr in result :
-        if rr > 1.5 :
+        if rr > 1 :
             answer.append(1)
         else :
             answer.append(0)
@@ -57,23 +49,24 @@ for d in data :
             max = result[a]
     answerSummary = np.zeros( len(answer) )
     answerSummary[index] = 1
-    results.append(answerSummary) 
+    # results.append(answerSummary) 
+    results.append(input) 
+    class_results.append(index+1)
     if index != 0 :
         print(str(cccc) + ' ' + '---------->' + str(input) + '->' + str(index+1) )
     else :
         print(str(cccc) + ' ' + str(input) + '->' + str(index+1))
     count[index] = count[index] + 1
     cccc = cccc + 1
-    # if cccc == 11 :
-    break
-    # print(str(input_feature) + '->' + str( np.where(answerSummary == 1) ) )
-
-# for r in results :
-#     print(r)
 
 print(count)
 
-# print(float(data[0][0]))
-# print(' ')
-# print(data[0])
-# print(data[0][0])
+file = open('result' + fileTarget + '.txt','w') 
+j = 0
+for result in results :
+    for i in range(0,len(result)) :
+        file.write(str(result[i]) + ',' )
+    file.write(str(class_results[j]) + '\n')
+    j = j + 1
+file.close() 
+

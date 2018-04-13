@@ -1,8 +1,0 @@
-				predicted
-actual
-				car		dog		crawl	walk		run
-	car			137		2		0		0		3
-	dog			26		857		7		0		0
-	crawl		87		68		2767	0		0
-	walk		1		0		2		709		77
-	run			0		0		0		10		341
