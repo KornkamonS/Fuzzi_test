@@ -86,33 +86,20 @@ def outputset(result_top, result_low, result_rule, n_class) :
 def centroid (top, low, yORn, output_feature_top, output_feature_low) :
     yr = 0
     yl = 0
-    N = 4
+    N = 5
     if yORn == 1 :
         x_axis = np.linspace(1,3,N)
     else :
         x_axis = np.linspace(0,2,N)
     x_axis = x_axis[1:N-1] 
+    # print(x_axis)
     y_axis_top = []
     y_axis_low = []
-    y_axis_top_X = []
-    y_axis_low_X = []
 
     # i = 0
     for x in x_axis :
         y_temp_top = 0.0
         y_temp_low = 0.0
-
-        # y_temp_top = triangle(output_feature_top[yORn] , x)
-        # if y_temp_top > 0 :
-        #     y_axis_top.append(y_temp_top)
-        # else : 
-        #     y_axis_top.append(0.00000000001 + y_temp_top)
-        
-        # y_temp_low = triangle(output_feature_low[yORn] , x)
-        # if y_temp_low > 0 :
-        #     y_axis_low.append(y_temp_low)
-        # else : 
-        #     y_axis_low.append(0.00000000001 + y_temp_low)
 
         y_temp_top = triangle(output_feature_top[yORn] , x)
         if y_temp_top > top :
@@ -122,9 +109,9 @@ def centroid (top, low, yORn, output_feature_top, output_feature_low) :
         
         y_temp_low = triangle(output_feature_low[yORn] , x)
         if y_temp_low > low :
-            y_axis_low.append(0.00000000001+low)
+            y_axis_low.append(0.00000000000001+low)
         else : 
-            y_axis_low.append(0.00000000001+y_temp_low)
+            y_axis_low.append(0.00000000000001+y_temp_low)
 
     ### CAL YR & YL
     y = x_axis
@@ -158,24 +145,7 @@ def centroid (top, low, yORn, output_feature_top, output_feature_low) :
 
     yr = max(yRL)
     yl = min(yRL)
-    # data = []
 
-    # data.append(
-    #     go.Scatter(
-    #         x = x_axis,
-    #         y = y_axis_top,
-    #     )
-    # )
-    # data.append(
-    #     go.Scatter(
-    #         x = x_axis,
-    #         y = y_axis_low,
-    #     )
-    # )
-
-    # fig = go.Figure(data = data)
-
-    # plotly.offline.plot(fig, filename='test.html')
     return yl, yr
 
 def outputEachRule (result_top, result_low, result_rule, output_feature_top, output_feature_low, n_class) :
@@ -201,15 +171,20 @@ def outputEachRule (result_top, result_low, result_rule, output_feature_top, out
 def defuzzyPrint( outputs ) :
     result = []
     print('DEFUZZ')
+    z = 1
+    cla = ['Car', 'Dog', 'Crawl', 'Walk', 'Run']
     for output in outputs :
         print('==========')
-        print('OUTPUT')
+        print('OUTPUT ' + cla[z-1])
         for x in output :
             print(' ' + str(x))
         outputSortedYL = output
         outputSortedYR = output
-        outputSortedYL = sorted(outputSortedYL, key=itemgetter(2))
-        outputSortedYR = sorted(outputSortedYR, key=itemgetter(3))
+
+        # outputSortedYL = sorted(outputSortedYL, key=itemgetter(2))
+        outputSortedYL = bubbleSort(outputSortedYL, 2)
+        # outputSortedYR = sorted(outputSortedYR, key=itemgetter(3))
+        outputSortedYR = bubbleSort(outputSortedYR, 3)
         print('sorted by yl')
         for x in outputSortedYL :
             print(' yl = ' + format(x[2], '.7f') + '\t' + str(x) )
@@ -224,49 +199,62 @@ def defuzzyPrint( outputs ) :
             yr = yr + (fr[i] * outputSortedYR[i][3])  
         yr = yr /  ( sum(fr) + 0.00000000001 )
         yrI = yr
-        for i in range(0,len(outputSortedYR)):
+        print('FR & YR start : ' + str(fr) + ' / ' + str(yr))
+        for i in range(0,len(outputSortedYR)-1):
             r = 0
             for j in range(0,len(outputSortedYR) - 1) :
                 if outputSortedYR[j][3] <= yrI and yrI <= outputSortedYR[j+1][3] :
                     r = j
                     break
-            fr = FRforYR(outputSortedYR, r)
+            fr = FforYR(outputSortedYR, r)
             yr = 0
             for j in range(0,len(fr)) :
                 yr = yr + (fr[j] * outputSortedYR[j][3])
             yr = yr / sum(fr)
             yrII = yr
+            print('FR ' + str(i) + ': ' + str(fr))
+            print('R = ' + str(r))
+            print('YR & YR\' & YR\'\' ' +  str(yr) + ' ' + str(yrI) + ' ' +  str(yrII))
             if yrII == yrI :
                 yr = yrII
-                print('HINT YR')
+                # print('HINT YR')
+                print('FINAL YR : ' + str(yr))
                 break
             else :
                 yrI = yrII
         print('Cal Yl')
         yl = 0
-        fr = initFR(outputSortedYL)
+        fl = initFR(outputSortedYL)
         for i in range(0,len(fr)) :
-            yl = yl + (fr[i] * outputSortedYL[i][2]) 
-        yl = yl / ( sum(fr) + 0.00000000001  )
+            yl = yl + (fl[i] * outputSortedYL[i][2]) 
+        yl = yl / ( sum(fl) + 0.00000000001  )
         ylI = yl
-        for i in range(0,len(outputSortedYL)) :
+        print('FL & YL start : ' + str(fl) + ' / ' + str(yl))
+        for i in range(0,len(outputSortedYL)-1) :
             l = 0
             for j in range(0,len(outputSortedYL) - 1) :
-                if outputSortedYL[j][2] <= yrI and yrI <= outputSortedYL[j+1][2] :
+                if outputSortedYL[j][2] <= ylI and ylI <= outputSortedYL[j+1][2] :
                     l = j
                     break
-            fr = FRforYL(outputSortedYL, l)
+            fl = FforYL(outputSortedYL, l)
             yl = 0
-            for j in range(0,len(fr)) :
-                yl = yl + (fr[j] * outputSortedYL[j][2])
-            yl = yl / sum(fr)
+            for j in range(0,len(fl)) :
+                yl = yl + (fl[j] * outputSortedYL[j][2])
+            yl = yl / sum(fl)
             ylII = yl
+            print('FL ' + str(i) + ': ' + str(fl))
+            print('L = ' + str(l))
+            print('YL & YL\' & YL\'\' ' +  str(yl) + ' ' + str(ylI) + ' ' +  str(ylII))
             if ylII == ylI :
                 yl = ylII
-                print('HINT YL')
+                # print('HINT YL')s
+                print('FINAL YL : ' + str(yl))
                 break
             else :
                 ylI = ylII
+                # print(ylI)
+        print('RESULT FOR CLASS '+ cla[z-1]  + ' = ' + str((yr+yl)/2))
+        z = z + 1
         result.append( (yr+yl)/2 )  
     return result
 
@@ -275,8 +263,10 @@ def defuzzy( outputs ) :
     for output in outputs :
         outputSortedYL = output
         outputSortedYR = output
-        outputSortedYL = sorted(outputSortedYL, key=itemgetter(2))
-        outputSortedYR = sorted(outputSortedYR, key=itemgetter(3))
+        # outputSortedYL = sorted(outputSortedYL, key=itemgetter(2))
+        outputSortedYL = bubbleSort(outputSortedYL, 2)
+        # outputSortedYR = sorted(outputSortedYR, key=itemgetter(3))
+        outputSortedYR = bubbleSort(outputSortedYR, 3)
         ### YR
         yr = 0
         fr = initFR(outputSortedYR)
@@ -290,7 +280,7 @@ def defuzzy( outputs ) :
                 if outputSortedYR[j][3] <= yrI and yrI <= outputSortedYR[j+1][3] :
                     r = j
                     break
-            fr = FRforYR(outputSortedYR, r)
+            fr = FforYR(outputSortedYR, r)
             yr = 0
             for j in range(0,len(fr)) :
                 yr = yr + (fr[j] * outputSortedYR[j][3])
@@ -303,22 +293,22 @@ def defuzzy( outputs ) :
                 yrI = yrII
         ### YL
         yl = 0
-        fr = initFR(outputSortedYL)
-        for i in range(0,len(fr)) :
-            yl = yl + (fr[i] * outputSortedYL[i][2]) 
-        yl = yl / ( sum(fr) + 0.00000000001  )
+        fl = initFR(outputSortedYL)
+        for i in range(0,len(fl)) :
+            yl = yl + (fl[i] * outputSortedYL[i][2]) 
+        yl = yl / ( sum(fl) + 0.00000000001  )
         ylI = yl
         for i in range(0,len(outputSortedYL)) :
             l = 0
             for j in range(0,len(outputSortedYL) - 1) :
-                if outputSortedYL[j][2] <= yrI and yrI <= outputSortedYL[j+1][2] :
+                if outputSortedYL[j][2] <= ylI and ylI <= outputSortedYL[j+1][2] :
                     l = j
                     break
-            fr = FRforYL(outputSortedYL, l)
+            fl = FforYL(outputSortedYL, l)
             yl = 0
-            for j in range(0,len(fr)) :
-                yl = yl + (fr[j] * outputSortedYL[j][2])
-            yl = yl / sum(fr)
+            for j in range(0,len(fl)) :
+                yl = yl + (fl[j] * outputSortedYL[j][2])
+            yl = yl / sum(fl)
             ylII = yl
             if ylII == ylI :
                 yl = ylII
@@ -331,10 +321,10 @@ def defuzzy( outputs ) :
 def initFR ( output ) :
     fr = []
     for out in output :
-        fr.append( ( (out[0]+out[1]) / 2 ) + 0.00000000001 )
+        fr.append( (out[0]+out[1]) / 2  )
     return fr
 
-def FRforYR ( output, R) :
+def FforYR ( output, R) :
     fr = []
     i = 0
     for out in output :
@@ -345,13 +335,27 @@ def FRforYR ( output, R) :
         i = i + 1
     return fr
 
-def FRforYL ( output, L) :
-    fr = []
+def FforYL ( output, L) :
+    fl = []
     i = 0
     for out in output :
         if i <= L :
-            fr.append( out[0] )
+            fl.append( out[0] )
         else : 
-            fr.append( out[1] )
+            fl.append( out[1] )
         i = i + 1
-    return fr
+    return fl
+
+def bubbleSort(arr, key):
+    arrKey = []
+    for a in arr :
+        arrKey.append(a[key])
+
+    n = len(arr)
+  
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arrKey[j] > arrKey[j+1] :
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                arrKey[j], arrKey[j+1] = arrKey[j+1], arrKey[j]
+    return arr

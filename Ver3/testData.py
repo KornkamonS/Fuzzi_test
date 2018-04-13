@@ -4,9 +4,9 @@ from rule_test import getRule
 from fuzzyInterval import fuzzification, inference, outputset, outputEachRule, defuzzy, defuzzyPrint
 from visualFuzz import printFuzzification, printMINIMUM_TN, printOutput
 import csv 
-
+fileTarget = 'dataRun'
 data = []
-with open('../data/dataCar.csv', 'r') as f:
+with open('../data/' + fileTarget +'.csv', 'r') as f:
     for row in csv.reader(f.read().splitlines() ):
         data.append( [] )
         for r in row :
@@ -61,12 +61,12 @@ for d in data :
 
 print(count)
 
-# file = open('resultRun.txt','w') 
-# j = 0
-# for result in results :
-#     for i in range(0,len(result)) :
-#         file.write(str(result[i]) + ',' )
-#     file.write(str(class_results[j]) + '\n')
-#     j = j + 1
-# file.close() 
+file = open('result' + fileTarget + '.txt','w') 
+j = 0
+for result in results :
+    for i in range(0,len(result)) :
+        file.write(str(result[i]) + ',' )
+    file.write(str(class_results[j]) + '\n')
+    j = j + 1
+file.close() 
 

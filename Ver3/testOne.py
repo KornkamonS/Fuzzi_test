@@ -13,7 +13,9 @@ n_class = 5
 
 # input_feature=[0.711538462, 0.903846154, 0, 0.1]
 # input_feature = [1.342105263,	0.973684211,	0.12,	0.1]
-input_feature = [0.638554217,	0.987951807,	0,	0.1]
+# input_feature = [0.638554217,	0.987951807,	0,	0.1]
+# input_feature = [0.648648649,	0.567567568,	0,	0]
+input_feature = [2.777777778, 0.833333333, 0.52, 0.045]
 
 ##########################
 print('INPUT')
@@ -29,5 +31,5 @@ printMINIMUM_TN(result_top, result_low, result_rule )
 ### Output
 outputs = outputEachRule (result_top, result_low, result_rule, output_feature_top, output_feature_low, n_class)
 result = defuzzyPrint(outputs)
-
+print(' ')
 print(result)
