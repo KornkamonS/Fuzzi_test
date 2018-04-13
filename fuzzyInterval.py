@@ -1,5 +1,5 @@
 import numpy as np
-from membership_test import firstMem, lastMem, triangle
+from membership import firstMem, lastMem, triangle
 import plotly
 from plotly.graph_objs import Scatter, Layout
 import plotly.graph_objs as go
