@@ -41,9 +41,7 @@ for i in range(0,len_i) :
             result = defuzzy(outputs)
             # print(result)
             xxxxxxxx = xxxxxxxx + ' ----> ' +str(result[0])
-            yyyy = (result[0] - 2) * 10000
-            if yyyy < 0 :
-                yyyy = 0.0
+            # Detect
             if result[0] > 2.1 :
                 cv.rectangle(imgRGB, (j*space,i*space), ((j*space)+130,(i*space)+130), (0,0,255), 2)
             print(xxxxxxxx)
