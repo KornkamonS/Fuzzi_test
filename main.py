@@ -9,7 +9,8 @@ from fuzzyInterval import fuzzification, inference, outputset, outputEachRule, d
 
 # print('Hello ')
 
-targetIMG = '/Users/mac/Google Drive/Project/DB/All247images/Benign/' + sys.argv[1] + '/BMP/JPCLN' + sys.argv[2] + '.bmp'
+targetIMG = '/Users/mac/Documents/Semester2-2017/Fuzzi_test/IMG/JPCLN' + sys.argv[1] + '.bmp'
+# targetIMG = '/Users/mac/Google Drive/Project/DB/All247images/Benign/' + sys.argv[1] + '/BMP/JPCLN' + sys.argv[2] + '.bmp'
 # targetIMG = '/Users/mac/Google Drive/Project/DB/All247images/Malignant/' + sys.argv[1] + '/BMP/JPCLN' + sys.argv[2] + '.bmp'
 print(targetIMG)
 space = 10
@@ -40,11 +41,11 @@ for i in range(0,len_i) :
             outputs = outputEachRule (result_top, result_low, result_rule, output_feature_top, output_feature_low, n_class)
             result = defuzzy(outputs)
             # print(result)
-            xxxxxxxx = xxxxxxxx + ' ----> ' +str(result[0])
+            xxxxxxxx = xxxxxxxx + ' ----> ' +str(result)
             # Detect
-            if result[0] > 2.1 :
+            if result[1] > result[0] and result[0] > 1.4  :
                 cv.rectangle(imgRGB, (j*space,i*space), ((j*space)+130,(i*space)+130), (0,0,255), 2)
-            print(xxxxxxxx)
+                print(xxxxxxxx)
 
 
 cv.imshow('img',img)
