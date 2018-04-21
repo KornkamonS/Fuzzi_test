@@ -242,10 +242,8 @@ def defuzzyPrint( outputs ) :
     return result
 
 def defuzzy( outputs ) :
-    result = []
+    result = 0
     output = outputs
-    for x in output :
-        print(' ' + str(x))
     outputSortedYL = output
     outputSortedYR = output
 
@@ -302,7 +300,7 @@ def defuzzy( outputs ) :
             break
         else :
             ylI = ylII
-    result.append( (yr+yl)/2 )  
+    result = (yr+yl)/2  
     return result
 
 def initFR ( output ) :
