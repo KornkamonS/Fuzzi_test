@@ -30,9 +30,8 @@ rule_feature, numOfRule = getRule()
 for level in range(4,6):
         with open("img//BMP_"+str(level)+"//list.txt") as f:
             fileimage = [x.strip().split('\t') for x in f.readlines()] 
-        print("file",fileimage,end='\n\n\n')
         for f in fileimage:
-            print(f)
+            # print(f)
             targetIMG = "img//BMP_"+str(level)+"//"+f[0]+".bmp"           
             print(targetIMG)
             space = 30
@@ -47,11 +46,12 @@ for level in range(4,6):
 
             for i in range(0,len_i) :
                 for j in range(0,len_j) :
+                    print('run...')
                     # input_feature = [1,1,1,1,1,1,1]
                     input_feature = result_Feature(imgs[i][j])
                     ##########################
-                    print('INPUT')
-                    print(input_feature)
+                    # print('INPUT')
+                    # print(input_feature)
                     ##########################
 
                     ### Fuzzification
@@ -63,9 +63,9 @@ for level in range(4,6):
                     result = defuzzy(outputs)
                     ## i,j,result
                     result_print=str(i)+','+str(j)+','+str(result)+'\n'
-                    print(result_print,end='')
+                    # print(result_print,end='')
                     file.write(result_print)
             file.close()
 
             value=0.8
-            save_result(level,f[0],value)
+            save_result(level,f,value)
