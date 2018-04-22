@@ -70,7 +70,7 @@ def lastMem(fuzzi,x):
         M = h
     return M
 def getMF_v1():
-    input_feature_top = [            #b
+    input_feature_top = [ #b
             [0.00000000 , 0.08869 , 0.10553714, 1],
             [0.097 , 0.11120529 , 0.117959, 1],
             [0.115696 , 0.122489 , 0.12525 , 1],
