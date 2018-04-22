@@ -72,13 +72,12 @@ def outputset(result_top, result_low, result_rule, n_class) :
             out[i][0] = [0, 0]
     return out
 
-def centroid (top, low, yORn, output_feature_top, output_feature_low) :
+def centroid (top, low, out, output_feature_top, output_feature_low) :
     yr = 0
     yl = 0
-    N = 5
-    x_axis = np.linspace(0,1,N)
+    N = 9
+    x_axis = np.linspace( output_feature_top[out][0] , output_feature_top[out][2] , N)
     x_axis = x_axis[1:N-1] 
-    # print(x_axis)
     y_axis_top = []
     y_axis_low = []
 
@@ -87,13 +86,23 @@ def centroid (top, low, yORn, output_feature_top, output_feature_low) :
         y_temp_top = 0.0
         y_temp_low = 0.0
 
-        y_temp_top = triangle(output_feature_top[yORn] , x)
+        if out == 0 :
+            y_temp_top = firstMem(output_feature_top[out] , x)
+            y_temp_low = firstMem(output_feature_low[out] , x)
+        elif out == len(output_feature_top) - 1 :
+            y_temp_top = lastMem(output_feature_top[out] , x)
+            y_temp_low = lastMem(output_feature_low[out] , x)
+        else :
+            y_temp_top = triangle(output_feature_top[out] , x)
+            y_temp_low = triangle(output_feature_low[out] , x)
+
+        # y_temp_top = firstMem(output_feature_top[out] , x)
         if y_temp_top > top :
             y_axis_top.append(top)
         else : 
             y_axis_top.append(y_temp_top)
         
-        y_temp_low = triangle(output_feature_low[yORn] , x)
+        # y_temp_low = lastMem(output_feature_low[out] , x)
         if y_temp_low > low :
             y_axis_low.append(0.00000000000001+low)
         else : 
