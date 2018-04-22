@@ -18,7 +18,7 @@ def getRule () :
     return rule_feature, len(rule_feature)
 def getRule_test_v1 () :
     rule_feature =[
-        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,1],
         # [-1,-1,-1,-1,-1,-1,0,0],
         # [-1,-1,-1,-1,-1,0,-1,0],
         # [-1,-1,-1,-1,0,-1,-1,0],

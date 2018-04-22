@@ -73,4 +73,7 @@ space = 30
 window_size=130
 
 # test_image(window_size,space)
-show_result(0.6,space)
+# show_result(0.6,space)
+boxes=[[1,1,10,10],[20,20,30,30]]
+a=non_max_suppression_fast(boxes,80)
+print(a)
