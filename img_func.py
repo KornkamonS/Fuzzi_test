@@ -151,3 +151,73 @@ def contour_test(scr,ch):
     test=cv2.cvtColor(im2,cv2.COLOR_GRAY2BGR)
     cv2.drawContours(test,contours, -1, (0,255,0), 1)
     return test
+def multiple_water(scr,ch):
+    kernel = np.ones((3,3),np.uint8)
+    test_img = cv2.morphologyEx(scr, cv2.MORPH_OPEN, kernel)
+    test_img = cv2.morphologyEx(test_img, cv2.MORPH_CLOSE, kernel)
+
+    test_img[test_img < np.mean(test_img)] = 0
+
+    out= cv2.equalizeHist(test_img) 
+    out= cv2.GaussianBlur(out,(7,7),0)
+    # fil=151
+    fil=151
+    if(ch=='M'):
+        thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,fil,1)
+    else:
+        thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,fil,1)    
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, np.ones((9,9),np.uint8))
+    
+    scr=cv2.cvtColor(scr.copy(),cv2.COLOR_GRAY2BGR)
+
+    # sure background area
+    
+    erode = cv2.erode(thresh,np.ones((5,5),np.uint8),iterations=2)        
+    sure_bg = cv2.dilate(erode,np.ones((5,5),np.uint8),iterations=3)
+    # test = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    # show_im('thresh',erode)
+    dist_transform = cv2.distanceTransform(erode,cv2.DIST_L2,5)
+    ret, sure_fg = cv2.threshold(dist_transform,0.2*dist_transform.max(),255,0)
+    sure_fg = np.uint8(sure_fg)
+    unknown = cv2.subtract(sure_bg,sure_fg)
+    ret, markers = cv2.connectedComponents(sure_fg)
+    markers = markers+1
+    markers[unknown==255] = 0
+    markers = cv2.watershed(scr,markers)
+    zeros_n=Draw_contour = np.zeros([scr.shape[0],scr.shape[1],3],dtype=np.uint8)
+    Draw_contour[markers == -1] = [255,255,255]
+
+    # show_im('d',Draw_contour)
+    ##find area that have most white
+    max_n=np.max(markers)
+    
+    zeros_n=np.zeros([scr.shape[0],scr.shape[1],3],dtype=np.uint8)
+    # show_im('out',out)
+    water=[]
+    target = []
+    for i in range(1,max_n+1):
+        tmp=zeros_n.copy()
+        tmp[markers==i]=[255,255,255]
+        avg_color=np.sum(out[markers==i])/(scr.shape[0]*scr.shape[1])
+        
+        tmp = cv2.cvtColor(tmp,cv2.COLOR_BGR2GRAY)
+        
+    
+        ## find contour 
+        
+        # water = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
+        contourmask = bwmasktemp,contours,hierarchy = cv2.findContours(tmp,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+        # Draw_contour=scr.copy()
+        # cv2.drawContours(Draw_contour,contours, -1, (0,255,0), 1)
+    
+        bigest = 0
+        for cnt in contours:
+            size=cv2.contourArea(cnt)
+            if size > bigest :
+                bigest = size
+                target.append(cnt)
+                water.append(tmp.copy())
+    print('len :',len(water),len(target))
+    # cv2.drawContours(Draw_contour,[target], -1, (0,255,0), 1)
+    return water,Draw_contour,target,len(water)
