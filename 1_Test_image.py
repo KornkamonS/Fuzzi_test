@@ -70,16 +70,17 @@ def test_image(window_size,space):
                             _result = defuzzy(outputs)
                             result.append(_result)
                         ## i,j,result ################################
-                        print(result)
-                        max_result=np.max(result)
-                        if(max_result>0):
+                        # print(result)
+                        max_result=np.max(result)                        
+                        if(max_result>0.0):
+                            # print('max:',max_result)
                             result_print=str(i)+','+str(j)+','+str(max_result)+'\n'
                             # print(result_print,end='')
                             file.write(result_print)
                         ##############################################
                 file.close()
 
-space = 50
+space = 30
 window_size=130
 
 # test_image(window_size,space)

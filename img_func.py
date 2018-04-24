@@ -218,6 +218,6 @@ def multiple_water(scr,ch):
                 bigest = size
                 target.append(cnt)
                 water.append(tmp.copy())
-    print('len :',len(water),len(target))
+    # print('len :',len(water),len(target))
     # cv2.drawContours(Draw_contour,[target], -1, (0,255,0), 1)
     return water,Draw_contour,target,len(water)
