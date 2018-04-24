@@ -1,6 +1,7 @@
 import cv2
 import sys
 import math
+import numpy as np
 def show_result(value,space):
     for level in range(4,6):
         with open("img//BMP_"+str(level)+"//list.txt") as f:
@@ -15,14 +16,24 @@ def show_result(value,space):
                 
             file_result='result//BMP_'+str(level)+'_'+f[0]+".txt"
             with open(file_result) as fr:
-                result_test = [x.strip().split(',') for x in fr.readlines()]
+            	result_test = [x.strip().split(',') for x in fr.readlines()]
 
+            _boxes=[]
             for r in result_test:
                 if(float(r[2])>value):
                     i,j=int(r[0]),int(r[1])
-                    cv2.rectangle(imgRGB, (j*space,i*space), ((j*space)+130,(i*space)+130), (0,0,255), 2)
-
+                    x1=j*space
+                    y1=i*space
+                    x2=(j*space)+130
+                    y2=(i*space)+130
+                    _boxes.append((x1,y1,x2,y2))
+                    # cv2.rectangle(imgRGB, (j*space,i*space), ((j*space)+130,(i*space)+130), (0,0,255), 2)            
             
+            boxes=non_max_suppression_fast(np.array(_boxes),0.3)
+            
+            
+            for b in boxes:
+                cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,0,255), 2)
             ### draw ground truth result###################################################                
             x=int(f[6])
             y=int(f[7])
@@ -31,6 +42,7 @@ def show_result(value,space):
             winWb = r+10
             cv2.rectangle(imgRGB, (x-winWb,y-winWb), (x+winWb,y+winWb), (255,0,0), 2)
 
+			
             ### save result ###################################################
             image_name='result//BMP_'+str(level)+'_'+f[0]+'.bmp'
             print(image_name)       
