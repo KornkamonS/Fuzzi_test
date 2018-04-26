@@ -6,7 +6,7 @@ def result_Feature (im) :
     
     ### Process image ###################################
     water,_,contour_result,_n__=multiple_water(im,'M')
-    # edges_g = canny_2_for_wavelet(im,'M') 
+    edges_g = canny_2_for_wavelet(im,'M') 
 
     ### Calcalate Feature #######################################
     b_std=[] 
@@ -17,15 +17,15 @@ def result_Feature (im) :
     for i in range(_n__):
         b,d = Find_fourier(contour_result[i],128)        
         diff = Diff(water[i], im.copy())
-        _wavelet = find_wavelet(water[i]) 
+        _wavelet = find_wavelet(edges_g) 
         # waveLet.append(_wavelet) 
         # b_result.append(b)
         # d_result.append(d)
         
         diff_result.append(diff)
 
-        # b=(b-np.min(b))/(np.max(b)-np.min(b))
-        # d=(d-np.min(d))/(np.max(d)-np.min(d))
+        b=(b-np.min(b))/(np.max(b)-np.min(b))
+        d=(d-np.min(d))/(np.max(d)-np.min(d))
 
         b_std.append(np.std(b))
         d_mean.append(np.mean(d)) 

@@ -80,8 +80,8 @@ def test_image(window_size,space):
                         ##############################################
                 file.close()
 
-space = 30
+space = 100
 window_size=130
 
-# test_image(window_size,space)
+test_image(window_size,space)
 show_result(0.6,space)
