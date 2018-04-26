@@ -1,5 +1,5 @@
 import numpy as np
-from membership import firstMem, lastMem, triangle
+from membership import firstMem, lastMem, triangle,trapezoid
 import plotly
 from plotly.graph_objs import Scatter, Layout
 import plotly.graph_objs as go
@@ -22,8 +22,8 @@ def fuzzification(input_feature, input_feature_top, input_feature_low, numOfFeat
                 out_top[i].append(lastMem(input_feature_top[i][j],input_feature[i]))
                 out_low[i].append(lastMem(input_feature_low[i][j],input_feature[i]))
             else:
-                out_top[i].append(triangle(input_feature_top[i][j],input_feature[i]))
-                out_low[i].append(triangle(input_feature_low[i][j],input_feature[i]))
+                out_top[i].append(trapezoid(input_feature_top[i][j],input_feature[i]))
+                out_low[i].append(trapezoid(input_feature_low[i][j],input_feature[i]))
     return out_low, out_top
 
 def inference(out_low, out_top, rule_feature, n_rule) :
@@ -93,8 +93,8 @@ def centroid (top, low, out, output_feature_top, output_feature_low) :
             y_temp_top = lastMem(output_feature_top[out] , x)
             y_temp_low = lastMem(output_feature_low[out] , x)
         else :
-            y_temp_top = triangle(output_feature_top[out] , x)
-            y_temp_low = triangle(output_feature_low[out] , x)
+            y_temp_top = trapezoid(output_feature_top[out] , x)
+            y_temp_low = trapezoid(output_feature_low[out] , x)
 
         # y_temp_top = firstMem(output_feature_top[out] , x)
         if y_temp_top > top :

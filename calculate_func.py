@@ -33,6 +33,7 @@ def find_wavelet(thresh):
     cA, (cH, cV, cD) = coeffs
     return [cA.flatten(), cH.flatten(), cV.flatten(), cD.flatten()]
 def Diff(thresh,imgCopy):
+    # imgCopy=cv2.cvtColor(imgCopy,cv2.COLOR_BGR2GRAY)
     mask = thresh
     in_obj = cv2.bitwise_and(imgCopy,imgCopy, mask= mask)
     area_in = np.sum(mask) / np.max(mask)

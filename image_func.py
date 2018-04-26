@@ -7,31 +7,32 @@ def show_im(name,image):
     image = cv2.resize(image, (0,0), fx=n, fy=n)
     cv2.imshow(name,image)
     cv2.waitKey(0)
+
 def water_edges(scr,ch):
 
     kernel = np.ones((3,3),np.uint8)
     test_img = cv2.morphologyEx(scr, cv2.MORPH_OPEN, kernel)
     test_img = cv2.morphologyEx(test_img, cv2.MORPH_CLOSE, kernel)
 
-    test_img[test_img < np.mean(test_img)] = 0
+    # test_img[test_img < np.mean(test_img)*0.3] = 0
 
-    out= cv2.equalizeHist(test_img) 
-    out= cv2.GaussianBlur(out,(7,7),0)
+    # out= cv2.equalizeHist(test_img) 
+    out= cv2.GaussianBlur(test_img,(11,11),0)
     # fil=151
-    fil=151
+    fil=51
     if(ch=='M'):
         thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,fil,1)
     else:
         thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,fil,1)    
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, np.ones((9,9),np.uint8))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((9,9),np.uint8))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, np.ones((5,5),np.uint8))
     
     scr=cv2.cvtColor(scr.copy(),cv2.COLOR_GRAY2BGR)
 
     # sure background area
     
     erode = cv2.erode(thresh,np.ones((5,5),np.uint8),iterations=2)        
-    sure_bg = cv2.dilate(erode,np.ones((5,5),np.uint8),iterations=3)
+    sure_bg = cv2.dilate(erode,np.ones((5,5),np.uint8),iterations=2)
     # test = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     # show_im('thresh',erode)
     dist_transform = cv2.distanceTransform(erode,cv2.DIST_L2,5)
@@ -77,27 +78,7 @@ def water_edges(scr,ch):
 
     # cv2.drawContours(Draw_contour,[target], -1, (0,255,0), 1)
     return water,Draw_contour,target
-def adaptiveThreshold_img(img,ch):
-    out= cv2.equalizeHist(img) 
-    # out= cv2.GaussianBlur(out,(3,3),0)
-    out= cv2.medianBlur(out,ksize=7) 
-    filter_n=59
-    # show_im('out',out)
-    out = cv2.morphologyEx(img, cv2.MORPH_CLOSE, np.ones((5,5),np.uint8))
-    if(ch=='G'):
-        thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C ,cv2.THRESH_BINARY,filter_n,1)
-    else:
-        thresh = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C  ,cv2.THRESH_BINARY,filter_n,1)  
 
-    # thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((5,5),np.uint8))
-    return thresh
-def canny_edges(img):
-    sum_n=np.sum(img)
-    avg_n=sum_n/(img.shape[0]*img.shape[1])
-    edges = cv2.Canny(img,avg_n*0.3,avg_n*0.6)
-    # kernel = np.ones((3,3),np.uint8)
-    # edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
-    return edges
 def canny_2_for_wavelet(scr,ch):
     kernel = np.ones((3,3),np.uint8)
     test_img = cv2.morphologyEx(scr, cv2.MORPH_OPEN, kernel)
@@ -128,53 +109,31 @@ def canny_2_for_wavelet(scr,ch):
     # e = cv2.morphologyEx(e, cv2.MORPH_CLOSE, np.ones((5,5),np.uint8))
   
     return e
-def contour_test(scr,ch):
-    im2= cv2.equalizeHist(scr) 
-    im2= cv2.GaussianBlur(im2,(7,7),0)
-    if(ch=='G'):
-        thresh = cv2.adaptiveThreshold(im2,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C ,cv2.THRESH_BINARY,155,1)
-    elif(ch=='M'):
-        thresh = cv2.adaptiveThreshold(im2,255,cv2.ADAPTIVE_THRESH_MEAN_C  ,cv2.THRESH_BINARY,155,1)
-    kernel = np.ones((3,3),np.uint8)
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    kernel = np.ones((9,9),np.uint8)
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-    kernel = np.ones((5,5),np.uint8)
-    erode = cv2.erode(thresh,kernel,iterations=2)
-    # print(erode)
-    im2=np.int64(im2)
-    im2[erode==255]=im2[erode==255]+20
-    im2[im2>255]=255
-    im2=np.uint8(im2)
 
-    contourmask = bwmasktemp,contours,hierarchy = cv2.findContours(im2,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-    test=cv2.cvtColor(im2,cv2.COLOR_GRAY2BGR)
-    cv2.drawContours(test,contours, -1, (0,255,0), 1)
-    return test
 def multiple_water(scr,ch):
     kernel = np.ones((3,3),np.uint8)
     test_img = cv2.morphologyEx(scr, cv2.MORPH_OPEN, kernel)
     test_img = cv2.morphologyEx(test_img, cv2.MORPH_CLOSE, kernel)
 
-    test_img[test_img < np.mean(test_img)] = 0
+    # test_img[test_img < np.mean(test_img)*0.3] = 0
 
-    out= cv2.equalizeHist(test_img) 
-    out= cv2.GaussianBlur(out,(7,7),0)
+    # out= cv2.equalizeHist(test_img) 
+    out= cv2.GaussianBlur(test_img,(11,11),0)
     # fil=151
-    fil=151
+    fil=51
     if(ch=='M'):
         thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,fil,1)
     else:
         thresh = cv2.adaptiveThreshold(out,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,fil,1)    
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, np.ones((9,9),np.uint8))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((9,9),np.uint8))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, np.ones((5,5),np.uint8))
     
     scr=cv2.cvtColor(scr.copy(),cv2.COLOR_GRAY2BGR)
 
     # sure background area
     
     erode = cv2.erode(thresh,np.ones((5,5),np.uint8),iterations=2)        
-    sure_bg = cv2.dilate(erode,np.ones((5,5),np.uint8),iterations=3)
+    sure_bg = cv2.dilate(erode,np.ones((5,5),np.uint8),iterations=2)
     # test = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     # show_im('thresh',erode)
     dist_transform = cv2.distanceTransform(erode,cv2.DIST_L2,5)
@@ -203,7 +162,6 @@ def multiple_water(scr,ch):
         
         tmp = cv2.cvtColor(tmp,cv2.COLOR_BGR2GRAY)
         
-    
         ## find contour 
         
         # water = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
@@ -211,13 +169,14 @@ def multiple_water(scr,ch):
         # Draw_contour=scr.copy()
         # cv2.drawContours(Draw_contour,contours, -1, (0,255,0), 1)
     
-        bigest = 0
-        for cnt in contours:
-            size=cv2.contourArea(cnt)
-            if size > bigest :
-                bigest = size
-                target.append(cnt)
-                water.append(tmp.copy())
+        # bigest = 30
+        size=[cv2.contourArea(c) for c in contours]
+        if(size!=[]):
+            # print(size)
+            index=np.argmax(size)
+            target.append(contours[index])
+            water.append(tmp.copy())
+
     # print('len :',len(water),len(target))
     # cv2.drawContours(Draw_contour,[target], -1, (0,255,0), 1)
     return water,Draw_contour,target,len(water)
