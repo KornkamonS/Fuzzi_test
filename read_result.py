@@ -7,7 +7,7 @@ import numpy as np
 def show_result(value,space,window_size):
 	resultOfPic=[[],[],[],[],[],[]]
 	acc_test=[[0,0],[0,0]]
-
+	winsize=130
 	test_file=["img//Train//nodule//","img//Train//none//"]
 	nodule=['nodule','none']
     #################################################################################
@@ -29,13 +29,13 @@ def show_result(value,space,window_size):
 				x=int(f[6])
 				y=int(f[7])
 				d=math.ceil(float(f[3]))
-				r=int(math.ceil(d/2))
-			else :
-				x=1024
-				y=1024
-				r=65
-			winWb = r+10
-			nodule_position=[x-winWb,y-winWb,x+winWb,y+winWb]
+				r=int(math.ceil(d/2))			
+				winWb = r+10  
+				if(r<(winsize*2)):
+					winWb=int(math.ceil(winsize/2))    
+				else:
+					winWb =int(math.ceil(r/2))+10 
+				nodule_position=[x-winWb,y-winWb,x+winWb,y+winWb]
 				
 			file_result='result//'+nodule[ni]+'//'+f[0]+".txt" 
 			with open(file_result) as fr:
@@ -60,19 +60,24 @@ def show_result(value,space,window_size):
 			count_TP=0
 			count_FP=0
 			
-			for b in _boxes:
-				_b=[b,nodule_position] 
-				_r=non_max_suppression_fast(np.array(_b),0.3) 
-				if(len(_r)==1 & ni==0):
-					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,255,0), 3)
-					count_TP+=1
-				else:
-					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,0,255), 2)
-					count_FP+=1
+			if(ni==0):
+				for b in _boxes:
+					_b=[b,nodule_position] 
+					_r=non_max_suppression_fast(np.array(_b),0.3) 
+					if(len(_r)==1):
+						cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,255,0), 3)
+						count_TP+=1
+					else:
+						cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,0,255), 2)
+						count_FP+=1
 
-			if(count_TP==0 & ni==0):
-				# count_FN+=1
-				cv2.rectangle(imgRGB, (x-winWb,y-winWb), (x+winWb,y+winWb), (255,0,0), 2)
+					if(count_TP==0 ):
+						# count_FN+=1
+						cv2.rectangle(imgRGB, (x-winWb,y-winWb), (x+winWb,y+winWb), (255,0,0), 2)
+			elif(len(_boxes)>0):
+				count_FP+=len(_boxes)
+				for b in _boxes:
+					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,0,255), 2)
 
 			print('==',count_TP,count_FP)
 			resultOfPic[ni].append([f[0],count_TP,count_FP])
