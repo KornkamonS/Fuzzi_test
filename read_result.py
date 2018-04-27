@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-def show_result(value,space):
+def show_result(value,space,window_size):
 	resultOfPic=[[],[],[],[],[],[]]
 	acc_test=[[0,0],[0,0]]
 
@@ -18,7 +18,7 @@ def show_result(value,space):
 		for f in fileimage:
 				
 			print('************')
-			print(f[0])
+			# print(f[0])
 			targetIMG = test_file[ni]+f[0]+".bmp"    
 			print(targetIMG)
 
@@ -33,12 +33,11 @@ def show_result(value,space):
 			else :
 				x=1024
 				y=1024
-				d=130
-				r=int(math.ceil(d/2))
+				r=65
 			winWb = r+10
 			nodule_position=[x-winWb,y-winWb,x+winWb,y+winWb]
 				
-			file_result='result//'+nodule[ni]+'//'+f[0]+".txt"
+			file_result='result//'+nodule[ni]+'//'+f[0]+".txt" 
 			with open(file_result) as fr:
 				result_test = [x.strip().split(',') for x in fr.readlines()]
 
@@ -49,8 +48,8 @@ def show_result(value,space):
 					i,j=int(r[0]),int(r[1])
 					x1=j*space
 					y1=i*space
-					x2=(j*space)+130
-					y2=(i*space)+130
+					x2=(j*space)+window_size
+					y2=(i*space)+window_size
 					_boxes.append((x1,y1,x2,y2))
 					
 			boxes=non_max_suppression_fast(np.array(_boxes),0.3)
@@ -60,12 +59,12 @@ def show_result(value,space):
 			## count accuracy ############################################
 			count_TP=0
 			count_FP=0
-
+			
 			for b in _boxes:
 				_b=[b,nodule_position] 
-				_r=non_max_suppression_fast(np.array(_b),0.3)
+				_r=non_max_suppression_fast(np.array(_b),0.3) 
 				if(len(_r)==1 & ni==0):
-					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (255,0,255), 2)
+					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,255,0), 3)
 					count_TP+=1
 				else:
 					cv2.rectangle(imgRGB, (b[0],b[1]),(b[2],b[3]), (0,0,255), 2)

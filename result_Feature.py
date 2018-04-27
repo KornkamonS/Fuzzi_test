@@ -1,6 +1,6 @@
 import numpy as np
 from calculate_func import *
-from image_func import *
+from image_func import multiple_water
 
 def resultFeature_multi (im) :
     ### Process image ###################################

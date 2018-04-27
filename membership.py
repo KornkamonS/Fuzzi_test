@@ -1,5 +1,4 @@
 import numpy as np
-
 def getMF ():
     input_feature_top = [#b mean
             [0.00000000000000000,0.02827400000000,0.056547,0.6000000],
@@ -31,7 +30,6 @@ def getMF ():
     for i in range(0,len(input_feature_top)) : 
         n_rule.append(len(input_feature_top[i]))
     return input_feature_top, input_feature_low, len(input_feature_top), n_rule
-
 def getOutput (): 
     output_feature_top = [
         [0      , 0.175 , 0.5  , 1],
@@ -44,41 +42,28 @@ def getOutput ():
         [0.625, 0.9, 1, 0.8]
     ]
     return output_feature_top, output_feature_low
+def getRule () :
+    rule_feature = [
+        [0,0,0,0],
+        [0,0,1,0],
+        [0,1,0,0],
+        [0,1,1,0],
+        [0,1,2,0],
+        [0,2,0,0],
+        [0,2,1,0],
+        [0,2,2,0],
+        [1,1,0,0],
+        [1,1,1,0],
+        [1,1,2,0],
+        [1,2,0,0],
+        [1,2,1,0],
+        [1,2,2,0],
+        [2,1,0,0],
+        [2,1,1,0],
+        [2,1,2,0],
+        [2,2,0,0],
+        [2,2,1,0],
+        [2,2,2,0]
+    ]
 
-def triangle(fuzzi,x) :
-    [ b, m, d, h ] = fuzzi
-    M = 0
-    if ( x >= b and x <= m) :
-        M = ( (0-h)/(b-m) ) * ( x - b )
-    if ( x > m and x <= d ):
-        M = h + ( h/(m-d) ) * ( x - m )
-    return M
-
-def trapezoid(fuzzi,x) :
-    [ b, m1,m2, d, h ] = fuzzi
-    M = 0
-    if ( x >= b and x < m1) :
-        M = ( (0-h)/(b-m1) ) * ( x - b )
-    if(m1<=x<=m2):
-        M = h
-    if ( x > m2 and x <= d ):
-        M = h + ( h/(m2-d) ) * ( x - m2 )
-    return M
-
-def firstMem(fuzzi,x):
-    [ b, m, d, h ] = fuzzi
-    M = 0
-    if ( x <= m ):
-        M = h
-    if ( x > m and x <= d ):
-        M = h + ( h/(m-d) ) * ( x-m )
-    return M
-
-def lastMem(fuzzi,x):
-    [ b, m, d, h ] = fuzzi
-    M = 0
-    if ( x >= b and x <= m):
-        M = ( (0-h)/(b-m) ) * ( x-b )
-    if (x > m  and x <= d):
-        M = h
-    return M
+    return rule_feature, len(rule_feature)

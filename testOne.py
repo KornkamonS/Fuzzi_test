@@ -1,8 +1,9 @@
 import numpy as np
-from membership import getMF, getOutput, firstMem, lastMem, triangle
-# from rule1 import getRule
-from rule import getRule
-from fuzzyInterval import fuzzification, inference, outputset, outputEachRule, defuzzy, defuzzyPrint
+
+from fuzzyInterval import (defuzzy, defuzzyPrint, firstMem, fuzzification,
+                           inference, lastMem, outputEachRule, outputset,
+                           triangle)
+from membership import getMF, getOutput, getRule
 from visualFuzz import printFuzzification, printMINIMUM_TN, printOutput
 
 ### INIT

@@ -6,10 +6,9 @@ import numpy as np
 from fuzzyInterval import (defuzzy, defuzzyPrint, fuzzification, inference,
                            outputEachRule, outputset)
 
-from membership import getMF,firstMem, getOutput, lastMem, triangle
-from read_result import *
-from result_Feature import *
-from rule import getRule
+from membership import getMF,getOutput,getRule
+from read_result import show_result
+from result_Feature import resultFeature_multi
 from visualFuzz import printFuzzification, printMINIMUM_TN, printOutput
 
 
@@ -39,10 +38,6 @@ def test_image(window_size,space):
         with open(test_file[level]+'list.txt') as f:
             fileimage = [x.strip().split('\t') for x in f.readlines()] 
         for f in fileimage:
-            # print(f)
-            print(level)
-            print(test_file[level])
-            print(f[0])
             targetIMG = test_file[level]+f[0]+".bmp"           
             print(targetIMG)                     
             img = cv2.imread(targetIMG,0) 
@@ -57,7 +52,6 @@ def test_image(window_size,space):
             for i in range(len_i) :
                 print(targetIMG,'runing...')
                 for j in range(len_j) :
-                    # input_feature = [1,1,1,1,1,1,1]
                     b_mean , d_std , diff_result ,_n__ = resultFeature_multi(imgs[i][j])
                     result =[]
                     for k in range(_n__):
@@ -78,26 +72,27 @@ def test_image(window_size,space):
                     # print(result)
                     max_result=np.max(result)                        
                     if(max_result>0.0):
-                        # print('max:',max_result)
                         result_print=str(i)+','+str(j)+','+str(max_result)+'\n'
-                        # print(result_print,end='')
                         file.write(result_print)
                             ##############################################
             file.close()
-
-space = 10
+def save_roc(window_size,space):
+    ### save roc curve
+    file_name='result//roc_curve.txt'
+    file = open(file_name,'w')
+    file.write('cut-off,True_positive,False_positive\n')
+    _list=np.arange(0,1.1,0.1,dtype='float')
+    # print(_list)
+    for i in _list:
+        print(i)
+        n_tp,n_fp = show_result(i,space,window_size)
+        file.write(str(i)+','+str(n_tp)+','+str(n_fp)+'\n')
+    file.close()
+space = 30
 window_size=130
 
 test_image(window_size,space)
+# show_result(0.8,space,window_size)
 
-### save roc curve
-file_name='result//roc_curve.txt'
-file = open(file_name,'w')
-file.write('cut-off,True_positive,False_positive\n')
-_list=np.arange(0,1.1,0.1,dtype='float')
-# print(_list)
-for i in _list:
-    print(i)
-    n_tp,n_fp = show_result(i,space)
-    file.write(str(i)+','+str(n_tp)+','+str(n_fp)+'\n')
-file.close()
+print('----------  finish!!!!!!!!!!  ------------------')
+## BMP008 finish

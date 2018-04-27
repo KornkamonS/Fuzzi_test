@@ -1,10 +1,45 @@
 import numpy as np
-from membership import firstMem, lastMem, triangle,trapezoid
 import plotly
 from plotly.graph_objs import Scatter, Layout
 import plotly.graph_objs as go
 from operator import itemgetter
+def triangle(fuzzi,x) :
+    [ b, m, d, h ] = fuzzi
+    M = 0
+    if ( x >= b and x <= m) :
+        M = ( (0-h)/(b-m) ) * ( x - b )
+    if ( x > m and x <= d ):
+        M = h + ( h/(m-d) ) * ( x - m )
+    return M
 
+def trapezoid(fuzzi,x) :
+    [ b, m1,m2, d, h ] = fuzzi
+    M = 0
+    if ( x >= b and x < m1) :
+        M = ( (0-h)/(b-m1) ) * ( x - b )
+    if(m1<=x<=m2):
+        M = h
+    if ( x > m2 and x <= d ):
+        M = h + ( h/(m2-d) ) * ( x - m2 )
+    return M
+
+def firstMem(fuzzi,x):
+    [ b, m, d, h ] = fuzzi
+    M = 0
+    if ( x <= m ):
+        M = h
+    if ( x > m and x <= d ):
+        M = h + ( h/(m-d) ) * ( x-m )
+    return M
+
+def lastMem(fuzzi,x):
+    [ b, m, d, h ] = fuzzi
+    M = 0
+    if ( x >= b and x <= m):
+        M = ( (0-h)/(b-m) ) * ( x-b )
+    if (x > m  and x <= d):
+        M = h
+    return M
 def fuzzification(input_feature, input_feature_top, input_feature_low, numOfFeature, n_rule) :
     out_low = [] 
     out_top = []
